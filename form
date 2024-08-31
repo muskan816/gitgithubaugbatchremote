@@ -1,0 +1,32 @@
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORM</title>
+    <link rel="stylesheet" href="form.css">
+</head>
+    <body>
+        <div class="container">
+            <form action="">
+                <div class="form">
+            <h1>PAY NOW</h1>
+            <hr>
+            <H3># mandotary fields has *</H3>
+            <hr>
+            <h2>USER INFO:-</h2>
+            <p>
+                Name:*
+                <input type="text"name="name" placeholder="enter your name" required>
+            </p>
+            <p>
+                Email:* <input type="email" name="EMAIL" id="email" placeholder="mail@gmail.com" required>
+           </p>
+            <p>
+                Password:*
+                <input type="password"name="password" placeholder="enter password" required>
+            </p>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
