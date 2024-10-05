@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+    <h1>STUDENT REGISTRATION FORM</h1>
+    <form>
+        <div class="container">
+            <hr>
+            <h4># mandatory fields have *</h4>
+            <hr>
+            <h2>USER INFO:</h2>
+            <div class="p" style="display: grid; grid-template-columns: repeat(2,1fr);">
+                Student Name:*
+                <p class="textarea"><input type="text" name="name" placeholder="Enter your name"></p>
+            </div>
+            <div class="p" style="display: grid; grid-template-columns: repeat(2,1fr);">
+                Student ID:*
+                <p class="textarea"><input type="number" name="number" placeholder="Enter your student id"></p>
+            </div>
+            <div class="p" style="display: grid; grid-template-columns: repeat(2,1fr);">
+                Email ID:* 
+                <p class="textarea"><input type="email" name="EMAIL" id="email" placeholder="Mail@gmail.com"></p>
+            </div>
+            <div class="p" style="display: grid; grid-template-columns: repeat(2,1fr);">
+                Contact No:*
+                <p class="textarea"><input type="number" name="contact" placeholder="Enter contact no."></p>
+            </div>
+            <button id="button1">SUBMIT</button>
+        </div>
+        <div class="history">
+            <div style="display: grid; grid-template-columns: repeat(4,1fr);"><span>NAME</span><span>ID</span><span>EMAIL</span><span>CONTACT</span></div><br>
+        </div>
+    </form>
+    <script src="index.js"></script>
+</body>
+</html>

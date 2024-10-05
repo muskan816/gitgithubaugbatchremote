@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body > h1 {
+    background-image: linear-gradient(to top, purple, cornflowerblue);
+    margin: 0;
+    padding: 0;
+    height: 11vh;
+    text-align: center;
+    padding-top: 6vh;
+    color: antiquewhite;
+    text-shadow: 2px 2px 5px black;
+    font-size: 6vh;
+}
+
+h4 {
+    height: 1.5px;
+    text-align: left;
+    color: antiquewhite;
+    text-shadow: 2px 2px 5px black;
+    margin-top: -1px;
+    margin-left: 10px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+h2 {
+    font-size: 5vh;
+}
+
+h2, .p {
+    color: antiquewhite;
+    text-shadow: 2px 2px 5px black;
+}
+
+.p {
+    font-size: 4vh;
+}
+
+.p input {
+    color: antiquewhite;
+    background-color: black;
+    border-radius: 7px;
+    box-shadow: 2px 2px 5px white;
+    border: 1px solid black;
+    height: 6vh;
+    width: 20vw;
+    padding-left: 10px;
+    font-size: 17px;
+}
+
+.p input:hover {
+    background-color: white;
+    color: black;
+    box-shadow: 2px 2px 5px black;
+}
+
+::placeholder {
+    color: antiquewhite;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+#button1 {
+    color: antiquewhite;
+    background-color: black;
+    border-radius: 7px;
+    box-shadow: 2px 2px 5px white;
+    border: 1px solid black;
+    height: 6vh;
+    width: 20vw;
+    cursor: pointer;
+    font-size: 17px;
+    margin-top: 40px;
+}
+
+#button1:hover { /* Corrected hover selector */
+    height: 6.7vh;
+    width: 20.5vw;
+}
+
+.trash-button,
+.reset-button {
+    color: black;
+    background-color: antiquewhite;
+    border-radius: 7px;
+    box-shadow: 2px 2px 5px black;
+    border: 1px solid black;
+    margin-top: 3px;
+    cursor: pointer;
+    height: 30px;
+    width: 50px;
+}
+
+.container {
+    background-image: linear-gradient(to bottom right, purple, cornflowerblue);
+    height: 83vh;
+    padding: 20px; /* Added padding */
+}
+
+.history {
+    background-image: linear-gradient(to bottom right, cornflowerblue, purple);
+    padding-left: 50px;
+    padding-right: 100px;
+    padding-top: 20px;
+}
+
+.history span {
+    color: black;
+    background-color: antiquewhite;
+    border-radius: 7px;
+    box-shadow: 2px 2px 5px black;
+    border: 1px solid antiquewhite;
+    height: 4vh;
+    width: 9vw;
+    font-size: 17px;
+    padding-top: 1.7vh;
+    margin-left: 10px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.space {
+    color: black;
+    background-color: antiquewhite;
+    border-radius: 7px;
+    box-shadow: 2px 2px 5px black;
+    border: 1px solid antiquewhite;
+    height: 4vh;
+    font-size: 17px;
+    padding-top: 1.7vh;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5px 0;
+    padding: 5px; 
+    margin-bottom: 50px;
+}
+
+.textarea {
+    margin-top: -5px;
+    margin-left: -150px;
+}
