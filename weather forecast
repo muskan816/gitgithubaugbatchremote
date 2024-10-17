@@ -4,94 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather</title>
-    <script src = "https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         body {
             background-image: linear-gradient(to bottom, blue, white);
-            height: 100%;
+            height: 100vh;
             width: 100%;
         }
-        #inputContainer {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        #input {
-            /* width: 350px; */
-            height: 40px;
-            font-size: 20px;
-            text-align: center;
-            margin-right: 20px;
-            border: 1px solid black;
-            border-radius: 5px;
-            box-shadow: 2px 2px 10px black;
-        }
-        #search {
-            width: 100px;
-            height: 40px;
-            font-size: 20px;
-            background-color: white;
-            border: 1px solid black;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 2px 2px 10px black;
-        }
-        h1 {
-            text-align: center;
-            /* font-size: 45px; */
-            color: cornsilk;
-            text-shadow: 3px 2px 1px black;
-        }
-        .forecast {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            margin-top: 30px;
-            gap: 30px;
-            justify-items: center;
-        }
-        .forecast-item {
-            text-align: center;
-            font-size: 18px;
-            border: 1px solid black;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 5px;
-            box-shadow: 2px 2px 10px black;
-        }
-        .history {
-            margin-top: 50px;
-        }
-        .history-item {
-            background-color: rgba(255, 255, 255, 0.8);
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid black;
-            border-radius: 5px;
-            box-shadow: 2px 2px 10px black;
-            display: flex;
-            gap: 40px;
-        }
-        #dropdown{width: 350px;
-            font-size: 20px;
-            text-align: center;
-            margin-right: 20px;
-            border: 1px solid black;
-            border-radius: 5px;
-            box-shadow: 2px 2px 10px black;
-            background-color: white;}
     </style>
 </head>
-<body>
-    <h1 class="text-[30px] sm:text-[45px]">Weather Forecast</h1>
-    <div id="inputContainer">
-        <div><input id="input" type="text" placeholder="Enter your city name" class="w-[200px] sm:w-[350px] ml-[30px] sm:ml-0 sm:mr-5"><div id="dropdown"></div></div>
-        <button id="search" class="-ml-28 sm:ml-0">Search</button>
+<body class="flex flex-col items-center p-4">
+
+    <h1 class="text-4xl md:text-5xl font-bold text-cyan-50 text-center mt-10 drop-shadow-md">
+        Weather Forecast
+    </h1>
+
+    <div id="inputContainer" class="flex flex-col md:flex-row items-center mt-6 space-y-4 md:space-y-0 md:space-x-4">
+        <div class="relative">
+            <input id="input" type="text" placeholder="Enter your city name"
+                   class="w-72 md:w-80 h-12 text-lg text-center border border-gray-500 rounded-lg shadow-md focus:outline-none">
+            <div id="dropdown" class="hidden absolute top-12 w-full bg-white shadow-lg rounded-lg"></div>
+        </div>
+        <button id="search"
+                class="h-12 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition">
+            Search
+        </button>
     </div>
-    <h3 id="city" class="w-[180px] sm:w-[350px] font-bold text-xl sm:text-3xl"></h3>
 
-    <div class="forecast grid grid-cols-1 lg:grid-cols-5 gap-6 mt-8 w-full max-w-screen-lg justify-items-center font-bold" id="forecastContainer"></div>
+    <h3 id="city" class="text-xl mt-4 text-center"></h3>
 
-    <div class="history w-full max-w-screen-lg mt-10 space-y-6 grid grid-flow-row" id="historyList"></div>
+    <div id="forecastContainer" 
+         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-8 w-full max-w-screen-lg justify-items-center">
+    </div>
+
+    <div id="historyList" class="w-full max-w-screen-lg mt-10 space-y-6"></div>
 
     <script>
         const input = document.getElementById("input");
@@ -99,16 +48,18 @@
         const forecastContainer = document.getElementById("forecastContainer");
         const historyList = document.getElementById("historyList");
         const enteredCity = document.getElementById("city");
-        const dropdown = document.getElementById("dropdown")
+        const dropdown = document.getElementById("dropdown");
 
-        input.addEventListener("click", function(){
-            const filledItem = input.value.trim()
-            const option = document.createElement("option")
-            dropdown.appendChild(option)
-            option.innerHTML = filledItem
-            dropdown.style.hide.remove()
-            dropdown.style.display = "none"
-        })
+        input.addEventListener("click", function () {
+            const filledItem = input.value.trim();
+            if (filledItem) {
+                const option = document.createElement("div");
+                option.className = "p-2 hover:bg-gray-200 cursor-pointer";
+                option.innerText = filledItem;
+                dropdown.appendChild(option);
+                dropdown.classList.remove("hidden");
+            }
+        });
 
         let weatherHistory = [];
 
@@ -152,10 +103,10 @@
                 const humidity = forecast.main.humidity;
 
                 const forecastItem = document.createElement("div");
-                forecastItem.className = "forecast-item";
+                forecastItem.className = "forecast-item p-4 border border-gray-400 bg-white/80 rounded-lg shadow-md text-center";
                 forecastItem.innerHTML = `
-                    <h3>${date}</h3>
-                    <img src="${icon}" alt="Weather icon">
+                    <h3 class="text-xl font-semibold">${date}</h3>
+                    <img src="${icon}" alt="Weather icon" class="mx-auto">
                     <p><strong>Temp:</strong> ${temp}°C</p>
                     <p><strong>Wind:</strong> ${windSpeed} m/s</p>
                     <p><strong>Humidity:</strong> ${humidity}%</p>
@@ -187,13 +138,13 @@
 
             weatherHistory.forEach(entry => {
                 const historyItem = document.createElement("div");
-                historyItem.className = "history-item";
+                historyItem.className = "history-item p-4 bg-white/80 border border-gray-400 rounded-lg shadow-md space-y-2";
                 historyItem.innerHTML = `
-                    <h2>${entry.cityName}</h2>
+                    <h2 class="text-2xl font-bold">${entry.cityName}</h2>
                     ${entry.forecast.map(day => `
                         <div>
-                            <h3>${day.date}</h3>
-                            <img src="${day.icon}" alt="Weather icon">
+                            <h3 class="text-xl">${day.date}</h3>
+                            <img src="${day.icon}" alt="Weather icon" class="mx-auto">
                             <p><strong>Temp:</strong> ${day.temp}°C</p>
                             <p><strong>Wind:</strong> ${day.wind} m/s</p>
                             <p><strong>Humidity:</strong> ${day.humidity}%</p>
@@ -204,6 +155,6 @@
             });
         }
     </script>
+
 </body>
 </html>
-
