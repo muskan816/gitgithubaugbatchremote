@@ -1,160 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        body {
-            background-image: linear-gradient(to bottom, blue, white);
-            height: 100vh;
-            width: 100%;
-        }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-image: linear-gradient(to bottom, #3b82f6, #f0f0f0);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed;
+        height: 100vh;
+        width: 100%;
+      }
+      #dropdown {
+        z-index: 10;
+        max-height: 200px;
+        overflow-y: auto;
+      }
     </style>
-</head>
-<body class="flex flex-col items-center p-4">
-
-    <h1 class="text-4xl md:text-5xl font-bold text-cyan-50 text-center mt-10 drop-shadow-md">
-        Weather Forecast
+  </head>
+  <body class="flex flex-col items-center p-4">
+    <h1
+      class="text-4xl md:text-5xl font-bold text-cyan-50 text-center mt-10 drop-shadow-md"
+    >
+      Weather Forecast
     </h1>
 
-    <div id="inputContainer" class="flex flex-col md:flex-row items-center mt-6 space-y-4 md:space-y-0 md:space-x-4">
-        <div class="relative">
-            <input id="input" type="text" placeholder="Enter your city name"
-                   class="w-72 md:w-80 h-12 text-lg text-center border border-gray-500 rounded-lg shadow-md focus:outline-none">
-            <div id="dropdown" class="hidden absolute top-12 w-full bg-white shadow-lg rounded-lg"></div>
-        </div>
-        <button id="search"
-                class="h-12 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition">
-            Search
-        </button>
+    <div
+      id="inputContainer"
+      class="flex flex-col md:flex-row items-center mt-6 space-y-4 md:space-y-0 md:space-x-4"
+    >
+      <div class="relative">
+        <input
+          id="input"
+          type="text"
+          placeholder="Enter your city name"
+          class="w-72 md:w-80 h-12 text-lg text-center border border-gray-500 rounded-lg shadow-md focus:outline-none"
+        />
+        <div
+          id="dropdown"
+          class="hidden absolute top-12 w-full bg-white shadow-lg rounded-lg"
+        ></div>
+      </div>
+      <button
+        id="search"
+        class="h-12 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition"
+      >
+        Search
+      </button>
     </div>
 
     <h3 id="city" class="text-xl mt-4 text-center"></h3>
 
-    <div id="forecastContainer" 
-         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-8 w-full max-w-screen-lg justify-items-center">
-    </div>
+    <div
+      id="forecastContainer"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mt-8 w-full max-w-screen-lg justify-items-center"
+    ></div>
 
     <div id="historyList" class="w-full max-w-screen-lg mt-10 space-y-6"></div>
 
     <script>
-        const input = document.getElementById("input");
-        const search = document.getElementById("search");
-        const forecastContainer = document.getElementById("forecastContainer");
-        const historyList = document.getElementById("historyList");
-        const enteredCity = document.getElementById("city");
-        const dropdown = document.getElementById("dropdown");
+      const input = document.getElementById("input");
+      const search = document.getElementById("search");
+      const forecastContainer = document.getElementById("forecastContainer");
+      const historyList = document.getElementById("historyList");
+      const enteredCity = document.getElementById("city");
+      const dropdown = document.getElementById("dropdown");
 
-        input.addEventListener("click", function () {
-            const filledItem = input.value.trim();
-            if (filledItem) {
-                const option = document.createElement("div");
-                option.className = "p-2 hover:bg-gray-200 cursor-pointer";
-                option.innerText = filledItem;
-                dropdown.appendChild(option);
-                dropdown.classList.remove("hidden");
-            }
+      let weatherHistory = [];
+      let recentCities = [];
+
+      // Handle input focus to show recent cities
+      input.addEventListener("focus", () => {
+        updateDropdown();
+        dropdown.classList.remove("hidden");
+      });
+
+      // Hide dropdown on outside click
+      document.addEventListener("click", (e) => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.add("hidden");
+        }
+      });
+
+      // Search on button click
+      search.addEventListener("click", () => {
+        const cityName = input.value.trim();
+        if (cityName) {
+          fetchWeather(cityName);
+          addToRecentCities(cityName);
+        } else {
+          enteredCity.innerText = "Please enter a city name.";
+        }
+      });
+
+      function addToRecentCities(city) {
+        if (!recentCities.includes(city)) {
+          recentCities.unshift(city);
+          if (recentCities.length > 5) recentCities.pop();
+        }
+        updateDropdown();
+      }
+
+      function updateDropdown() {
+        dropdown.innerHTML = "";
+        recentCities.forEach((city) => {
+          const option = document.createElement("div");
+          option.className = "p-2 hover:bg-blue-100 cursor-pointer border-b";
+          option.innerText = city;
+          option.onclick = () => {
+            input.value = city;
+            dropdown.classList.add("hidden");
+            fetchWeather(city);
+          };
+          dropdown.appendChild(option);
         });
+      }
 
-        let weatherHistory = [];
+      function fetchWeather(cityName) {
+        const apiKey = "c82bdb34c69be2d49785cf841a28fa5f";
+        const url = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}`;
 
-        search.addEventListener("click", function () {
-            const cityName = input.value.trim();
-            if (cityName) {
-                fetchWeather(cityName);
-            } else {
-                enteredCity.innerText = "Please enter a city name.";
+        fetch(url)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.cod !== "200") {
+              enteredCity.innerText = "City not found. Please try again.";
+              return;
             }
+            displayForecast(data, cityName);
+            saveHistory(data, cityName);
+          })
+          .catch((error) => {
+            enteredCity.innerText = "Error fetching weather. Try again.";
+            console.error(error);
+          });
+      }
+
+      function displayForecast(data, cityName) {
+        enteredCity.innerText = `Weather forecast for ${cityName}`;
+        forecastContainer.innerHTML = "";
+
+        for (let i = 0; i < data.list.length; i += 8) {
+          const forecast = data.list[i];
+          const date = new Date(forecast.dt_txt).toLocaleDateString("en-GB", {
+            weekday: "long",
+          });
+          const temp = Math.round(forecast.main.temp - 273.15);
+          const icon = `https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`;
+          const windSpeed = forecast.wind.speed;
+          const humidity = forecast.main.humidity;
+
+          const forecastItem = document.createElement("div");
+          forecastItem.className =
+            "forecast-item p-4 border bg-white rounded-lg shadow text-center w-44";
+          forecastItem.innerHTML = `
+                <h3 class="text-lg font-semibold">${date}</h3>
+                <img src="${icon}" alt="Weather icon" class="mx-auto">
+                <p><strong>${temp}°C</strong></p>
+                <p>Wind: ${windSpeed} m/s</p>
+                <p>Humidity: ${humidity}%</p>
+            `;
+          forecastContainer.appendChild(forecastItem);
+        }
+      }
+
+      function saveHistory(data, cityName) {
+        const entry = {
+          cityName,
+          forecast: data.list
+            .filter((_, i) => i % 8 === 0)
+            .map((item) => ({
+              date: new Date(item.dt_txt).toLocaleDateString("en-GB", {
+                weekday: "long",
+              }),
+              temp: Math.round(item.main.temp - 273.15),
+              icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`,
+              wind: item.wind.speed,
+              humidity: item.main.humidity,
+            })),
+        };
+
+        weatherHistory.unshift(entry);
+        displayHistory();
+      }
+
+      function displayHistory() {
+        historyList.innerHTML = "";
+
+        weatherHistory.forEach((entry) => {
+          const historyItem = document.createElement("div");
+          historyItem.className =
+            "history-item p-4 bg-white/90 border rounded-lg shadow-md space-y-2";
+
+          let daysHtml = entry.forecast
+            .map(
+              (day) => `
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-10">
+                    <div class="text-lg w-32">${day.date}</div>
+                    <img src="${day.icon}" class="w-12 h-12" />
+                    <div class="text-sm">
+                        Temp: ${day.temp}°C<br>
+                        Wind: ${day.wind} m/s<br>
+                        Humidity: ${day.humidity}%
+                    </div>
+                </div>
+            `
+            )
+            .join("");
+
+          historyItem.innerHTML = `<h2 class="text-2xl font-bold">${entry.cityName}</h2>${daysHtml}`;
+          historyList.appendChild(historyItem);
         });
-
-        function fetchWeather(cityName) {
-            const apiKey = "c82bdb34c69be2d49785cf841a28fa5f";
-            const url = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    displayForecast(data, cityName);
-                    saveHistory(data, cityName);
-                })
-                .catch(error => {
-                    enteredCity.innerText = "Error fetching weather. Please try again.";
-                    console.error(error);
-                });
-        }
-
-        function displayForecast(data, cityName) {
-            enteredCity.innerText = `Weather forecast for ${cityName}`;
-            forecastContainer.innerHTML = ""; // Clear previous forecast
-
-            for (let i = 0; i < data.list.length; i += 8) {  // Every 8th item (24-hour intervals)
-                const forecast = data.list[i];
-                const date = new Date(forecast.dt_txt).toLocaleDateString("en-GB", {
-                    weekday: "long"
-                });
-                const temp = Math.round(forecast.main.temp - 273.15);
-                const icon = `https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`;
-                const windSpeed = forecast.wind.speed;
-                const humidity = forecast.main.humidity;
-
-                const forecastItem = document.createElement("div");
-                forecastItem.className = "forecast-item p-4 border border-gray-400 bg-white/80 rounded-lg shadow-md text-center";
-                forecastItem.innerHTML = `
-                    <h3 class="text-xl font-semibold">${date}</h3>
-                    <img src="${icon}" alt="Weather icon" class="mx-auto">
-                    <p><strong>Temp:</strong> ${temp}°C</p>
-                    <p><strong>Wind:</strong> ${windSpeed} m/s</p>
-                    <p><strong>Humidity:</strong> ${humidity}%</p>
-                `;
-                forecastContainer.appendChild(forecastItem);
-            }
-        }
-
-        function saveHistory(data, cityName) {
-            const historyEntry = {
-                cityName: cityName,
-                forecast: data.list.filter((_, index) => index % 8 === 0).map(forecast => ({
-                    date: new Date(forecast.dt_txt).toLocaleDateString("en-GB", {
-                        weekday: "long"
-                    }),
-                    temp: Math.round(forecast.main.temp - 273.15),
-                    icon: `https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
-                    wind: forecast.wind.speed,
-                    humidity: forecast.main.humidity
-                }))
-            };
-
-            weatherHistory.push(historyEntry);
-            displayHistory();
-        }
-
-        function displayHistory() {
-            historyList.innerHTML = ""; // Clear previous history
-
-            weatherHistory.forEach(entry => {
-                const historyItem = document.createElement("div");
-                historyItem.className = "history-item p-4 bg-white/80 border border-gray-400 rounded-lg shadow-md space-y-2";
-                historyItem.innerHTML = `
-                    <h2 class="text-2xl font-bold">${entry.cityName}</h2>
-                    ${entry.forecast.map(day => `
-                        <div>
-                            <h3 class="text-xl">${day.date}</h3>
-                            <img src="${day.icon}" alt="Weather icon" class="mx-auto">
-                            <p><strong>Temp:</strong> ${day.temp}°C</p>
-                            <p><strong>Wind:</strong> ${day.wind} m/s</p>
-                            <p><strong>Humidity:</strong> ${day.humidity}%</p>
-                        </div>
-                    `).join("")}
-                `;
-                historyList.appendChild(historyItem);
-            });
-        }
+      }
     </script>
-
-</body>
+  </body>
 </html>
