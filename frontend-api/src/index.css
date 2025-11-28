@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+.stats-midline {
+  position: relative;
+}
+
+.big-gold {
+  text-shadow: 0 6px 18px rgba(145,107,9,0.08);
+}
+
+.GOLD {color: #C59A2F;}
+.GOLD-bg {background-color: #d4af37;}
+
+.gold-cta-x {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+}
+
+.gold-cta-x:hover {
+  transform: translateX(4px);
+  box-shadow: 0 10px 30px rgba(197, 154, 47, 0.25);
+}
+
+/* one gentle shimmer */
+.gold-cta-x::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.35),
+    rgba(255, 255, 255, 0)
+  );
+  transform: skewX(-25deg);
+}
+
+.gold-cta-x:hover::before {
+  animation: shineOnce 1.4s ease forwards;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
